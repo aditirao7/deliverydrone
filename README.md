@@ -8,6 +8,8 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
   3. OpenCV
   4. pyzbar library
   
+  
+  
 ## Description of Tasks
 
   ### Task 1
@@ -28,6 +30,8 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
   ### Task 6
   Task 6 is the same as Task 5 but with a different manifest to test the performance of the scheduling algorithm.
     
+    
+    
 ## How to use
 
   1. Clone repository in the root directory
@@ -38,6 +42,8 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
      ```
   3. Execute launch file for whichever task for example:
      ```roslaunch vitarana_drone task_1.launch```
+     
+     
      
 ## Issues
   
