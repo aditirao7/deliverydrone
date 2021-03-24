@@ -18,7 +18,7 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
   ### Task 2
   In this task, the drone detects the coordinates of the delivery address through the QR Code on the parcel. The drone then goes to that address and drops the package while avoiding obstacles in the way.
 
-  ## Task 3
+  ### Task 3
   In this task, the drone goes to multiple specified locations and executes a search pattern to look for a specific landing marker. After finding the landing marker, the drone hovers over it and then goes to the next location.
 
   ### Task 4
