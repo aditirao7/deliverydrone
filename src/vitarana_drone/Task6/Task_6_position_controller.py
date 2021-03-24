@@ -22,7 +22,7 @@ class Position():
         self.initial_loc = np.array([0, 0, 0])
         # GPS coordinates of buildings
         self.file = pd.read_csv(
-            os.path.expanduser('~/catkin_ws/src/vitarana_drone/Task6/sequenced_manifest.csv'),
+            os.path.expanduser('~/delivery_drone/src/vitarana_drone/Task6/sequenced_manifest.csv'),
             delimiter=",",
             engine="python",
             header=None)

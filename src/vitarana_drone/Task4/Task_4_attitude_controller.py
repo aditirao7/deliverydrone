@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 # Importing the required libraries
+
 from vitarana_drone.msg import *
-from pid_tune.msg import PidTune
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Float32
 import rospy
 import tf
 import numpy as np
+
 
 class Attitude():
 
@@ -40,7 +41,7 @@ class Attitude():
         self.pwm_cmd.prop4 = 0.0
 
         # Numpy array for PID gains : [Pitch, Roll, Yaw] * coefficient ratios
-        self.Kp = np.array([20, 20, 608]) * 0.06
+        self.Kp = np.array([20, 20, 108]) * 0.06
         self.Ki = np.array([11, 11, 8]) * 0.008
         self.Kd = np.array([36, 36, 306]) * 0.03
 
@@ -53,19 +54,19 @@ class Attitude():
         self.min_value = 0.0
 
         # PID sampling rate and time
-        self.sample_rate = 50  # in Hz
-        self.sample_time = 0.02  # in seconds
+        self.sample_rate = 10  # in Hz
+        self.sample_time = 0.1  # in seconds
 
-        # Publishing /edrone/pwm
+        # Publishing /edrone/pwm, /roll_error, /pitch_error, /yaw_error
         self.pwm_pub = rospy.Publisher('/edrone/pwm', prop_speed, queue_size=1)
 
-        # Subscribing to /drone_command, imu/data
+        # Subscribing to /drone_command, imu/data, /pid_tuning_roll,
+        # /pid_tuning_pitch, /pid_tuning_yaw
         rospy.Subscriber(
             '/edrone/drone_command',
             edrone_cmd,
             self.drone_command_callback)
         rospy.Subscriber('/edrone/imu/data', Imu, self.imu_callback)
-
 # ------------------------------------------------------------------------------------------------------------
 
     # Callback for orientation from IMU in quaternion
@@ -82,26 +83,8 @@ class Attitude():
         self.throttle = msg.rcThrottle
  # ----------------------------------------------------------------------------------------------------------------------
 
+    # Function for checking limits of PID output
     def checkLimits(self, pwm):
-        '''
-        Purpose:
-        ---
-        For limiting the PID output to the PWM range that can be given to the motors
-
-        Input Arguments:
-        ---
-        drone_command :  [ float ]
-            The PID output 
-
-        Returns:
-        ---
-        No specific name :  [ int/float ] (type depends on which condition)
-            The limited value of PID output
-
-        Example call:
-        ---
-        self.checkLimits(output)
-        '''
         if pwm > self.max_value:
             return self.max_value
         elif pwm < self.min_value:
@@ -109,24 +92,8 @@ class Attitude():
         else:
             return pwm
 
+    # PID algorithm
     def pid(self):
-        '''
-        Purpose:
-        ---
-        Calculating motor values using PID based on setpoints
-
-        Input Arguments:
-        ---
-        None
-
-        Returns:
-        ---
-        Does not return value but changes a member variable
-
-        Example call:
-        ---
-        self.pid()
-        '''
         # Converting quaternion to euler angles
         self.drone_orientation_euler = np.array(
             tf.transformations.euler_from_quaternion(
@@ -139,8 +106,11 @@ class Attitude():
             return
 
         # Convertng the range from 1000 to 2000 in the range of -10 degree to
-        # 10 degree for pitch, roll and yaw setpoints
-        self.setpoint_euler = self.setpoint_cmd * 0.02 - 30
+        # 10 degree for pitch, roll  setpoints
+        self.setpoint_euler[0:2] = self.setpoint_cmd[0:2] * 0.02 - 30
+        # Converting the range from 1000 to 2000 in the range of -180 to
+        # 180 degree for yaw setpoints
+        self.setpoint_euler[2] = self.setpoint_cmd[2] * 0.36 - 540
 
         # Converting throttle to 0-1023 range
         throttle = self.throttle * 1.023 - 1023
@@ -187,10 +157,7 @@ class Attitude():
         # Publishing final PID output on /edrone/pwm to move drone
         self.pwm_pub.publish(self.pwm_cmd)
 
-# Function Name:    main (built in)
-#        Inputs:    None
-#       Outputs:    None
-#       Purpose:    To call the pid() function
+
 if __name__ == '__main__':
 
     e_drone_attitude = Attitude()

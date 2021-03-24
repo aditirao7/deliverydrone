@@ -7,4 +7,7 @@
         </include>
         <node name="throttler_model_states" type="throttle" pkg="topic_tools" args="messages /gazebo/model_states 10"/>
         <node name="gripper_service" type="gripper_service.py" pkg="vitarana_drone"/>
+	<node name="attitude_controller" type="Task_2_attitude_controller.py" pkg="vitarana_drone"/>
+	<node name="position_controller" type="Task_2_position_controller.py" pkg="vitarana_drone"/>
+	<node name="qr_detect" type="Task_2_qr_detect.py" pkg="vitarana_drone"/>
 </launch>

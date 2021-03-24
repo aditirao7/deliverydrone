@@ -31,7 +31,7 @@ class Position():
         colnames = ["grid", "lat", "lon", "alt"]
         data = pd.read_csv(
             os.path.expanduser(
-                '~/catkin_ws/src/vitarana_drone/scripts/manifest.csv'),
+                '~/delivery_drone/src/vitarana_drone/Task4/manifest.csv'),
             names=colnames)
         self.grid_squares = data.grid.tolist()
 

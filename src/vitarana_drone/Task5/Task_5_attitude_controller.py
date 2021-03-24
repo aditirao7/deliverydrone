@@ -3,7 +3,6 @@
 # Importing the required libraries
 
 from vitarana_drone.msg import *
-from pid_tune.msg import PidTune
 from sensor_msgs.msg import Imu
 from std_msgs.msg import Float32
 import rospy
@@ -60,12 +59,6 @@ class Attitude():
 
         # Publishing /edrone/pwm, /roll_error, /pitch_error, /yaw_error
         self.pwm_pub = rospy.Publisher('/edrone/pwm', prop_speed, queue_size=1)
-        self.roll_error_pub = rospy.Publisher(
-            '/roll_error', Float32, queue_size=1)
-        self.pitch_error_pub = rospy.Publisher(
-            '/pitch_error', Float32, queue_size=1)
-        self.yaw_error_pub = rospy.Publisher(
-            '/yaw_error', Float32, queue_size=1)
 
         # Subscribing to /drone_command, imu/data, /pid_tuning_roll,
         # /pid_tuning_pitch, /pid_tuning_yaw
@@ -74,10 +67,6 @@ class Attitude():
             edrone_cmd,
             self.drone_command_callback)
         rospy.Subscriber('/edrone/imu/data', Imu, self.imu_callback)
-        rospy.Subscriber('/pid_tuning_roll', PidTune, self.roll_set_pid)
-        rospy.Subscriber('/pid_tuning_pitch', PidTune, self.pitch_set_pid)
-        rospy.Subscriber('/pid_tuning_yaw', PidTune, self.yaw_set_pid)
-
 # ------------------------------------------------------------------------------------------------------------
 
     # Callback for orientation from IMU in quaternion
@@ -92,23 +81,6 @@ class Attitude():
     def drone_command_callback(self, msg):
         self.setpoint_cmd = np.array([msg.rcPitch, msg.rcRoll, msg.rcYaw])
         self.throttle = msg.rcThrottle
-
-    # Callback functions for /pid_tuning_roll, /pid_tuning_pitch, /pid_tuning_yaw
-    # These functions get executed each time /tune_pid publishes
-    def roll_set_pid(self, roll):
-        self.Kp[1] = roll.Kp * 0.06
-        self.Ki[1] = roll.Ki * 0.008
-        self.Kd[1] = roll.Kd * 0.03
-
-    def pitch_set_pid(self, pitch):
-        self.Kp[0] = pitch.Kp * 0.06
-        self.Ki[0] = pitch.Ki * 0.008
-        self.Kd[0] = pitch.Kd * 0.003
-
-    def yaw_set_pid(self, yaw):
-        self.Kp[2] = yaw.Kp * 0.06
-        self.Ki[2] = yaw.Ki * 0.008
-        self.Kd[2] = yaw.Kd * 0.03
  # ----------------------------------------------------------------------------------------------------------------------
 
     # Function for checking limits of PID output
@@ -134,8 +106,11 @@ class Attitude():
             return
 
         # Convertng the range from 1000 to 2000 in the range of -10 degree to
-        # 10 degree for pitch, roll and yaw setpoints
-        self.setpoint_euler = self.setpoint_cmd * 0.02 - 30
+        # 10 degree for pitch, roll  setpoints
+        self.setpoint_euler[0:2] = self.setpoint_cmd[0:2] * 0.02 - 30
+        # Converting the range from 1000 to 2000 in the range of -180 to
+        # 180 degree for yaw setpoints
+        self.setpoint_euler[2] = self.setpoint_cmd[2] * 0.36 - 540
 
         # Converting throttle to 0-1023 range
         throttle = self.throttle * 1.023 - 1023
@@ -178,11 +153,6 @@ class Attitude():
 
         # Assigning prev_values with error for the next iteration
         self.prev_values = error
-
-        # Publishing errors for Plotjuggler
-        self.roll_error_pub.publish(error[1])
-        self.pitch_error_pub.publish(error[0])
-        self.yaw_error_pub.publish(error[2])
 
         # Publishing final PID output on /edrone/pwm to move drone
         self.pwm_pub.publish(self.pwm_cmd)

@@ -5,4 +5,6 @@
             file="$(find gazebo_ros)/launch/empty_world.launch">
             <arg name="world_name"  value="$(find vitarana_drone)/worlds/drone$(arg static).world"/>
         </include>
+	<node name="attitude_controller" type="Task_1_attitude_controller.py" pkg="vitarana_drone"/>
+	<node name="position_controller" type="Task_1_position_controller.py" pkg="vitarana_drone"/>
 </launch>

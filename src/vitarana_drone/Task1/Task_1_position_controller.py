@@ -60,12 +60,6 @@ class Position():
         # /longitude_error
         self.setpoint_pub = rospy.Publisher(
             '/edrone/drone_command', edrone_cmd, queue_size=1)
-        self.altitude_error_pub = rospy.Publisher(
-            '/altitude_error', Float32, queue_size=1)
-        self.latitude_error_pub = rospy.Publisher(
-            '/latitude_error', Float32, queue_size=1)
-        self.longitude_error_pub = rospy.Publisher(
-            '/longitude_error', Float32, queue_size=1)
 
         # Subscribing to /edrone/gps for current GPS location
         rospy.Subscriber('/edrone/gps', NavSatFix, self.gps_callback)
@@ -121,11 +115,6 @@ class Position():
 
         # Assigning prev_values with error for the next iteration
         self.prev_values = error
-
-        # Publishing errors for Plotjuggler
-        self.latitude_error_pub.publish(error[0])
-        self.longitude_error_pub.publish(error[1])
-        self.altitude_error_pub.publish(error[2])
 
 	# Publishing final PID output on /edrone/drone_command for the attitude
         # controller

@@ -21,8 +21,8 @@
 	    <node name="throttler_model_states" type="throttle" pkg="topic_tools" args="messages /gazebo/model_states 3"/>
 	    <node name="throttler_gps" type="throttle" pkg="topic_tools" args="messages /edrone/gps 3"/>
 	    <node name="gripper_service" type="gripper_service.py" pkg="vitarana_drone"/>
-	    <node name="detect_logo" type="detect_logo.py" pkg="vitarana_drone"/>
-	    <node name="attitude_controller" type="attitude_controller.py" pkg="vitarana_drone"/>
-	    <node name="position_controller" type="position_controller.py" pkg="vitarana_drone"/>
+	    <node name="detect_logo" type="Task_6_detect_logo.py" pkg="vitarana_drone"/>
+	    <node name="attitude_controller" type="Task_6_attitude_controller.py" pkg="vitarana_drone"/>
+	    <node name="position_controller" type="Task_6_position_controller.py" pkg="vitarana_drone"/>
 
 </launch>
