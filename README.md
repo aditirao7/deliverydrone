@@ -20,13 +20,18 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
 
   ### Task 3
   In this task, the drone goes to multiple specified locations and executes a search pattern to look for a specific landing marker. After finding the landing marker, the drone hovers over it and then goes to the next location.
+  
   https://www.youtube.com/watch?v=0pDmjvo3zCo
 
   ### Task 4
   In this task, the drone computes the address coordinates for every parcel on the grid square from a manifest document. The drone then delivers them on the closest landing marker at those coordinates.
+  
+  https://www.youtube.com/watch?v=JAkIn2an14I&feature=youtu.be
 
   ### Task 5
   Task 5 is similar to Task 4 but the manifest documents also contains return parcels that mustbe delivered back to the return grid square. The drone uses a script called Task_5_schedule.py to compute the best order of returns and deliveries such that the drone is flying empty for less time and maximum earnings are acquired in a given time.
+  
+  https://www.youtube.com/watch?v=G9XYRhGov2A&feature=youtu.be
 
   ### Task 6
   Task 6 is the same as Task 5 but with a different manifest to test the performance of the scheduling algorithm.
