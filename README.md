@@ -20,6 +20,7 @@ A collective codebase for the simulation of an autonomous delivery drone as a pa
 
   ### Task 3
   In this task, the drone goes to multiple specified locations and executes a search pattern to look for a specific landing marker. After finding the landing marker, the drone hovers over it and then goes to the next location.
+  https://www.youtube.com/watch?v=0pDmjvo3zCo
 
   ### Task 4
   In this task, the drone computes the address coordinates for every parcel on the grid square from a manifest document. The drone then delivers them on the closest landing marker at those coordinates.
